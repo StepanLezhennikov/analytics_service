@@ -29,6 +29,7 @@ RUN poetry config virtualenvs.create false && \
     poetry install --no-root --verbose
 
 COPY entrypoint.sh /entrypoint.sh
+COPY kowl-config.yml /etc/kowl/config.yml
 
 RUN chmod +x /entrypoint.sh
 
