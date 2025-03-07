@@ -21,10 +21,13 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+      kafka:
+        condition: service_healthy
     volumes:
       - .:/app
     networks:
       - app-network
+      - kafka-network
     env_file: .env.example
     entrypoint: "/entrypoint.sh"
 
@@ -51,6 +54,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
       - app-network
+      - kafka-network
     healthcheck:
       test: [ "CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list" ]
       interval: 10s
@@ -78,3 +82,5 @@ volumes:
 networks:
   app-network:
     driver: bridge
+  kafka-network:
+    external: true
