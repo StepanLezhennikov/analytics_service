@@ -8,7 +8,7 @@ from app.application.services.kafka_consumer import KafkaConsumerService
 
 kafka_consumer_service = KafkaConsumerService()
 
-logger = logging.getLogger("kafka_consumer")
+logger = logging.getLogger("main")
 
 logger.setLevel(logging.INFO)
 
