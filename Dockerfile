@@ -5,7 +5,7 @@ LABEL authors="Stepan Lezhennikov"
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
-    libpq-dev gcc --no-install-recommends && \
+    libpq-dev gcc musl-dev --no-install-recommends && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -15,9 +15,14 @@ RUN pip install --upgrade pip && pip install --no-cache-dir poetry && \
     poetry config virtualenvs.create false && \
     poetry install --no-root --verbose
 
-FROM python:3.12-alpine
+FROM python:3.12-slim
 
-RUN apk add --no-cache bash gcc libpq-dev
+ENV PYTHONPATH=/app/src
+
+RUN apt-get update && apt-get install -y \
+    libpq-dev gcc musl-dev --no-install-recommends && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
