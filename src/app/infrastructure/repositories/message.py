@@ -1,7 +1,7 @@
 from app.config import TOPICS
 from app.db_config import db
-from app.application.services.kafka_consumer import logger
-from app.application.interfaces.repositories.message import MessageRepositoryInterface
+from app.core.interfaces.repositories.message import MessageRepositoryInterface
+from app.infrastructure.services.kafka_consumer import logger
 
 
 class MessageRepository(MessageRepositoryInterface):

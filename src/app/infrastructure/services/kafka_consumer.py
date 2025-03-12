@@ -6,10 +6,8 @@ from aiokafka import AIOKafkaConsumer
 from dependency_injector.wiring import Provide, inject
 
 from app.config import TOPICS, config
-from app.application.interfaces.repositories.message import MessageRepositoryInterface
-from app.presentation.interfaces.services.kafka_consumer import (
-    KafkaConsumerServiceInterface,
-)
+from app.core.interfaces.repositories.message import MessageRepositoryInterface
+from app.core.interfaces.services.kafka_consumer import KafkaConsumerServiceInterface
 
 logger = logging.getLogger("kafka_consumer")
 

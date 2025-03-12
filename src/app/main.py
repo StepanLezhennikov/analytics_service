@@ -5,13 +5,13 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.containers import Container
-from app.application.services.kafka_consumer import KafkaConsumerService
+from app.infrastructure.services.kafka_consumer import KafkaConsumerService
 
 kafka_consumer_service = KafkaConsumerService()
 
 container = Container()
 
-container.wire(packages=[__name__, "app.application.services"])
+container.wire(packages=[__name__, "app.infrastructure.services"])
 
 logger = logging.getLogger("main")
 
