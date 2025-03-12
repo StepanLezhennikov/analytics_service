@@ -1,23 +1,31 @@
 import json
 import logging
 
+from fastapi import Depends
 from aiokafka import AIOKafkaConsumer
+from dependency_injector.wiring import Provide, inject
 
-from app.config import config
+from app.config import TOPICS, config
+from app.application.interfaces.repositories.message import MessageRepositoryInterface
 from app.presentation.interfaces.services.kafka_consumer import (
     KafkaConsumerServiceInterface,
 )
 
 logger = logging.getLogger("kafka_consumer")
 
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 
 class KafkaConsumerService(KafkaConsumerServiceInterface):
 
     def __init__(self):
         self.consumer = AIOKafkaConsumer(
-            config.KAFKA_TOPIC_CREATE_TASK,
+            TOPICS.TASK_CREATED.value,
+            TOPICS.TASK_UPDATED.value,
+            TOPICS.TASK_DELETED.value,
+            TOPICS.PROJECT_CREATED.value,
+            TOPICS.PROJECT_DELETED.value,
+            TOPICS.PROJECT_UPDATED.value,
             bootstrap_servers=config.KAFKA_BOOTSTRAP_SERVERS,
             group_id="analytics",
         )
@@ -25,18 +33,23 @@ class KafkaConsumerService(KafkaConsumerServiceInterface):
     async def start_consuming(self):
         await self.consumer.start()
 
-    async def consume(self):
+    @inject
+    async def consume(
+        self,
+        message_repository: MessageRepositoryInterface = Depends(
+            Provide["message_repository"]
+        ),
+    ):
         if self.consumer:
             async for message in self.consumer:
-                logger.info(f"Topic: {message.topic}")
                 message_str = message.value.decode("utf-8")
-                logger.info(f"Message: {message_str}")
 
                 try:
                     message_data = json.loads(message_str)
+                    logger.info(f"Topic: {message.topic}")
                     logger.info(f"Parsed message data: {message_data}")
 
-                    # TODO: Запись в БД
+                    await message_repository.create(TOPICS(message.topic), message_data)
 
                 except json.JSONDecodeError as e:
                     logger.error(f"Failed to decode JSON: {e}")

@@ -4,9 +4,14 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from app.containers import Container
 from app.application.services.kafka_consumer import KafkaConsumerService
 
 kafka_consumer_service = KafkaConsumerService()
+
+container = Container()
+
+container.wire(packages=[__name__, "app.application.services"])
 
 logger = logging.getLogger("main")
 
@@ -26,6 +31,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+
+app.container = container
 
 
 @app.get("/")
