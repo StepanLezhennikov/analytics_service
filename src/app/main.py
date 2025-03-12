@@ -15,14 +15,9 @@ logger.setLevel(logging.INFO)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("Starting Kafka Consumer...")
-    await kafka_consumer_service.start_consuming()
-
-    asyncio.create_task(kafka_consumer_service.consume())
-    yield
-
-    logger.info("Stopping Kafka Consumer...")
-    await kafka_consumer_service.stop_consuming()
+    async with KafkaConsumerService() as kafka_consumer:
+        asyncio.create_task(kafka_consumer.consume())
+        yield
 
 
 app = FastAPI(lifespan=lifespan)
