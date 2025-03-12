@@ -15,12 +15,12 @@ class Config(BaseSettings):
 
 
 class TOPICS(str, Enum):
-    TASK_CREATED: str = "task_created"
-    TASK_UPDATED: str = "task_updated"
-    TASK_DELETED: str = "task_deleted"
-    PROJECT_CREATED: str = "project_created"
-    PROJECT_UPDATED: str = "project_updated"
-    PROJECT_DELETED: str = "project_deleted"
+    TASK_CREATED: str = "task.create"
+    TASK_UPDATED: str = "task.update"
+    TASK_DELETED: str = "task.delete"
+    PROJECT_CREATED: str = "project.create"
+    PROJECT_UPDATED: str = "project.update"
+    PROJECT_DELETED: str = "project.delete"
 
 
 config = Config()

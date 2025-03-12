@@ -7,14 +7,14 @@ from dependency_injector.wiring import Provide, inject
 
 from app.config import TOPICS, config
 from app.core.interfaces.repositories.message import MessageRepositoryInterface
-from app.core.interfaces.services.kafka_consumer import KafkaConsumerServiceInterface
+from app.core.interfaces.services.kafka_consumer import ConsumerServiceInterface
 
 logger = logging.getLogger("kafka_consumer")
 
 logger.setLevel(logging.DEBUG)
 
 
-class KafkaConsumerService(KafkaConsumerServiceInterface):
+class KafkaConsumerService(ConsumerServiceInterface):
 
     def __init__(self):
         self.consumer = AIOKafkaConsumer(
@@ -28,8 +28,14 @@ class KafkaConsumerService(KafkaConsumerServiceInterface):
             group_id="analytics",
         )
 
-    async def start_consuming(self):
+    async def __aenter__(self):
+        logger.info("Starting Kafka Consumer with context manager...")
         await self.consumer.start()
+        return self
+
+    async def __aexit__(self, exc_type, exc_value, traceback):
+        logger.info("Stopping Kafka Consumer...")
+        await self.consumer.stop()
 
     @inject
     async def consume(
@@ -53,7 +59,3 @@ class KafkaConsumerService(KafkaConsumerServiceInterface):
                     logger.error(f"Failed to decode JSON: {e}")
                 except Exception as e:
                     logger.error(f"Error processing message: {e}")
-
-    async def stop_consuming(self):
-        if self.consumer:
-            await self.consumer.stop()
