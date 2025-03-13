@@ -6,14 +6,14 @@ from dependency_injector.wiring import Provide
 
 from app.config import TOPICS
 from app.core.interfaces.repositories.message import MessageRepositoryInterface
-from app.core.interfaces.services.message_process import MessageProcessInterface
+from app.core.interfaces.services.message_handler import MessageHandlerInterface
 
 logger = logging.getLogger("message_process_service")
 
 logger.setLevel(logging.INFO)
 
 
-class MessageProcess(MessageProcessInterface):
+class MessageHandler(MessageHandlerInterface):
     def __init__(
         self,
         message_repository: MessageRepositoryInterface = Depends(
@@ -22,7 +22,7 @@ class MessageProcess(MessageProcessInterface):
     ):
         self.message_repository = message_repository
 
-    async def process_message(self, topic: TOPICS, message: str) -> None:
+    async def handle_message(self, topic: TOPICS, message: str) -> None:
         try:
             message_data = json.loads(message)
             logger.info(f"Topic: {topic}")

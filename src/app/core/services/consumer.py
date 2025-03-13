@@ -5,9 +5,9 @@ from dependency_injector.wiring import Provide, inject
 
 from app.config import TOPICS
 from app.core.interfaces.consumer.consumer import ConsumerInterface
+from app.core.interfaces.services.consumer import ConsumerServiceInterface
 from app.core.interfaces.repositories.message import MessageRepositoryInterface
-from app.core.interfaces.services.kafka_consumer import ConsumerServiceInterface
-from app.core.interfaces.services.message_process import MessageProcessInterface
+from app.core.interfaces.services.message_handler import MessageHandlerInterface
 
 logger = logging.getLogger("consumer")
 
@@ -17,7 +17,7 @@ logger.setLevel(logging.INFO)
 class ConsumerService(ConsumerServiceInterface):
     def __init__(
         self,
-        message_process_service: MessageProcessInterface = Depends(
+        message_process_service: MessageHandlerInterface = Depends(
             Provide["message_process_service"]
         ),
         consumer: ConsumerInterface = Depends(Provide["consumer"]),
@@ -44,6 +44,6 @@ class ConsumerService(ConsumerServiceInterface):
         if self.consumer:
             async for message in self.consumer:
                 message_str = message.value.decode("utf-8")
-                await self.message_process_service.process_message(
+                await self.message_process_service.handle_message(
                     TOPICS(message.topic), message_str
                 )

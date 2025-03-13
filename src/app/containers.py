@@ -3,7 +3,7 @@ from dependency_injector import providers, containers
 
 from app.config import TOPICS, config
 from app.infrastructure.repositories.message import MessageRepository
-from app.infrastructure.services.message_process import MessageProcess
+from app.infrastructure.services.message_handler import MessageHandler
 
 topics = [
     TOPICS.TASK_CREATED.value,
@@ -18,7 +18,7 @@ topics = [
 class Container(containers.DeclarativeContainer):
     message_repository = providers.Singleton(MessageRepository)
     message_process_service = providers.Factory(
-        MessageProcess, message_repository=message_repository
+        MessageHandler, message_repository=message_repository
     )
     consumer = providers.Factory(
         AIOKafkaConsumer,
