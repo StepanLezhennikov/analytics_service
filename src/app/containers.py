@@ -11,7 +11,8 @@ topics = [
     TOPICS.TASK_DELETED.value,
     TOPICS.PROJECT_CREATED.value,
     TOPICS.PROJECT_DELETED.value,
-    TOPICS.PROJECT_UPDATED.value,
+    TOPICS.USER_ADDED.value,
+    TOPICS.USER_DELETED.value,
 ]
 
 
