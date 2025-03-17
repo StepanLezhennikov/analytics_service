@@ -1,5 +1,6 @@
 import json
 import logging
+from datetime import datetime
 
 from fastapi import Depends
 from dependency_injector.wiring import Provide
@@ -9,8 +10,17 @@ from app.core.interfaces.repositories.message import MessageRepositoryInterface
 from app.core.interfaces.services.message_handler import MessageHandlerInterface
 
 logger = logging.getLogger("message_process_service")
-
 logger.setLevel(logging.INFO)
+
+
+def convert_datetime_fields(data: dict):
+    for key, value in data.items():
+        if isinstance(value, str):
+            try:
+                data[key] = datetime.fromisoformat(value)
+            except ValueError:
+                pass
+    return data
 
 
 class MessageHandler(MessageHandlerInterface):
@@ -26,6 +36,9 @@ class MessageHandler(MessageHandlerInterface):
         try:
             message_data = json.loads(message)
             logger.info(f"Topic: {topic}")
+
+            message_data = convert_datetime_fields(message_data)
+
             logger.info(f"Parsed message data: {message_data}")
 
             await self.message_repository.create(TOPICS(topic), message_data)

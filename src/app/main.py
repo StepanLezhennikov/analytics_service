@@ -6,12 +6,14 @@ from fastapi import FastAPI
 
 from app.containers import Container
 from app.core.services.consumer import ConsumerService
+from app.infrastructure.api.rest.controllers import api
 
 kafka_consumer_service = ConsumerService()
 
 container = Container()
 
 container.wire(packages=[__name__, "app.infrastructure.services"])
+container.wire(packages=[__name__, "app.infrastructure.api.rest.v1"])
 
 logger = logging.getLogger("main")
 
@@ -28,6 +30,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.container = container
+
+app.include_router(api)
 
 
 @app.get("/")
