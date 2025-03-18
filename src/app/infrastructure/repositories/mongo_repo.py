@@ -1,21 +1,27 @@
 from datetime import datetime, timedelta
 
-from app.config import TOPICS, TaskStatus
-from app.db_config import db
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
+
+from app.config import TOPICS, Config, TaskStatus
 from app.core.dto.task import TaskStatusStrDTO
 from app.core.interfaces.repositories.mongo_repo import MongoRepositoryInterface
 
 
 class MongoRepository(MongoRepositoryInterface):
+    def __init__(self, config: Config):
+        self.config = config
+        self.client: AsyncIOMotorClient = AsyncIOMotorClient(config.MONGO_URI)
+        self.db: AsyncIOMotorDatabase = self.client.get_database(config.MONGO_DATABASE)
+
     async def filter(self, collection: TOPICS, **filters) -> list:
-        collection = getattr(db, collection)
+        collection = getattr(self.db, collection)
         results = await collection.find(filters).to_list(None)
         return results
 
     async def get_tasks_statuses(
         self, collection: TOPICS, project_id: int, exclude_task_ids: list[int] = None
     ) -> list[TaskStatusStrDTO]:
-        collection = getattr(db, collection)
+        collection = getattr(self.db, collection)
         if exclude_task_ids is None:
             exclude_task_ids = []
 
@@ -57,7 +63,7 @@ class MongoRepository(MongoRepositoryInterface):
     async def count_completed_tasks_by_user(
         self, collection: TOPICS, project_id: int, user_id: int
     ) -> int:
-        collection = getattr(db, collection)
+        collection = getattr(self.db, collection)
         week_ago = datetime.now() - timedelta(days=7)
 
         count_result = await collection.aggregate(
@@ -90,7 +96,7 @@ class MongoRepository(MongoRepositoryInterface):
     async def get_avg_time_to_complete(
         self, collection: TOPICS, project_id: int
     ) -> int:
-        collection = getattr(db, collection)
+        collection = getattr(self.db, collection)
         avg_time_result = await collection.aggregate(
             [
                 {

@@ -1,7 +1,7 @@
 from aiokafka import AIOKafkaConsumer
 from dependency_injector import providers, containers
 
-from app.config import TOPICS, config
+from app.config import TOPICS, Config
 from app.infrastructure.services.task import TaskService
 from app.infrastructure.services.user import UserService
 from app.infrastructure.services.project import ProjectService
@@ -21,8 +21,10 @@ topics = [
 
 
 class Container(containers.DeclarativeContainer):
-    message_repository = providers.Singleton(MessageRepository)
-    mongo_repository = providers.Singleton(MongoRepository)
+    config = providers.Singleton(Config)
+
+    message_repository = providers.Factory(MessageRepository, config=config)
+    mongo_repository = providers.Factory(MongoRepository, config=config)
 
     message_process_service = providers.Factory(
         MessageHandler, message_repository=message_repository
@@ -36,6 +38,6 @@ class Container(containers.DeclarativeContainer):
     consumer = providers.Factory(
         AIOKafkaConsumer,
         *topics,
-        bootstrap_servers=config.KAFKA_BOOTSTRAP_SERVERS,
+        bootstrap_servers=config.provided.KAFKA_BOOTSTRAP_SERVERS,
         group_id="analytics"
     )

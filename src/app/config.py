@@ -13,6 +13,9 @@ logging.basicConfig(level=logging.ERROR)
 class Config(BaseSettings):
     KAFKA_BOOTSTRAP_SERVERS: str = os.getenv("KAFKA_BOOTSTRAP_SERVERS")
 
+    MONGO_URI: str = os.getenv("MONGO_URI")
+    MONGO_DATABASE: str = os.getenv("MONGO_DATABASE")
+
 
 class TOPICS(str, Enum):
     TASK_CREATED: str = "task.create"
@@ -28,6 +31,3 @@ class TaskStatus(str, Enum):
     BACKLOG: str = "BACKLOG"
     RUNNING: str = "RUNNING"
     DONE: str = "DONE"
-
-
-config = Config()
