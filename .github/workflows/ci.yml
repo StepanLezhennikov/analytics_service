@@ -51,6 +51,7 @@ jobs:
       - name: Create Mongo user
         run: |
           docker-compose exec mongodb mongosh --eval '
+            use admin;
             db.createUser({
               user: "mongo",
               pwd: "mongo",
