@@ -49,7 +49,7 @@ jobs:
         run: docker-compose up -d
 
       - name: Run tests
-        run: docker-compose exec analytics_service-analytics-1 pytest --cov=.
+        run: docker-compose exec analytics pytest --cov=.
 
       - name: Stop containers
         run: docker-compose down
