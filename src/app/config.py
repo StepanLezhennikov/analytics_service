@@ -19,8 +19,15 @@ class TOPICS(str, Enum):
     TASK_UPDATED: str = "task.update"
     TASK_DELETED: str = "task.delete"
     PROJECT_CREATED: str = "project.create"
-    PROJECT_UPDATED: str = "project.update"
     PROJECT_DELETED: str = "project.delete"
+    USER_CREATED: str = "user.create"
+    USER_DELETED: str = "user.delete"
+
+
+class TaskStatus(str, Enum):
+    BACKLOG: str = "BACKLOG"
+    RUNNING: str = "RUNNING"
+    DONE: str = "DONE"
 
 
 config = Config()
