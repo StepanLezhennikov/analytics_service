@@ -7,7 +7,7 @@ services:
       timeout: 5s
       retries: 3
     volumes:
-      - mongodb_data:/var/lib/mongodb/data
+      - mongodb_data:/data/db
     env_file: .env.example
     ports:
       - "27017:27017"

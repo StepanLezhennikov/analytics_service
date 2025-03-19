@@ -13,8 +13,14 @@ logging.basicConfig(level=logging.ERROR)
 class Config(BaseSettings):
     KAFKA_BOOTSTRAP_SERVERS: str = os.getenv("KAFKA_BOOTSTRAP_SERVERS")
 
-    class Topics(str, Enum):
-        TASK_CREATED = "task.create"
+
+class TOPICS(str, Enum):
+    TASK_CREATED: str = "task.create"
+    TASK_UPDATED: str = "task.update"
+    TASK_DELETED: str = "task.delete"
+    PROJECT_CREATED: str = "project.create"
+    PROJECT_UPDATED: str = "project.update"
+    PROJECT_DELETED: str = "project.delete"
 
 
 config = Config()
