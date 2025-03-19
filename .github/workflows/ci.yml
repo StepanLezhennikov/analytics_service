@@ -55,8 +55,8 @@ jobs:
               user: "mongo",
               pwd: "mongo",
               roles: [{ role: "readWrite", db: "test" }]
-            })
-          )'
+            });
+          '
 
       - name: Run tests
         run: docker-compose exec analytics pytest --cov=.
