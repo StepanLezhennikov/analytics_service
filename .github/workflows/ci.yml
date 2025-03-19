@@ -38,7 +38,9 @@ jobs:
         uses: docker/setup-docker-action@v4.1.0
 
       - name: Docker Setup Network
-        run: docker network create app-network kafka-network
+        run: |
+          docker network create app-network
+          docker network create kafka-network
 
       - name: Docker Compose Setup
         uses: ndeloof/install-compose-action@v0.0.1
