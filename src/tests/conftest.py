@@ -12,7 +12,7 @@ from app.config import Config
 @pytest.fixture(scope="session", autouse=True)
 def settings() -> Config:
     config = Config()
-    config.MONGO_URI += "test"
+    config.MONGO_URI += "test?authSource=admin"
     config.MONGO_DATABASE = "test"
     app.container.config.override(config)
     return config
