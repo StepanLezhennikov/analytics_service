@@ -6,8 +6,8 @@ from app.infrastructure.services.task import TaskService
 from app.infrastructure.services.user import UserService
 from app.infrastructure.services.project import ProjectService
 from app.infrastructure.repositories.message import MessageRepository
-from app.infrastructure.repositories.mongo_repo import MongoRepository
 from app.infrastructure.services.message_handler import MessageHandler
+from app.infrastructure.repositories.analytics_repo import AnalyticsRepository
 
 topics = [
     TOPICS.TASK_CREATED.value,
@@ -22,16 +22,20 @@ topics = [
 
 class Container(containers.DeclarativeContainer):
     message_repository = providers.Singleton(MessageRepository)
-    mongo_repository = providers.Singleton(MongoRepository)
+    analytics_repository = providers.Singleton(AnalyticsRepository)
 
     message_process_service = providers.Factory(
         MessageHandler, message_repository=message_repository
     )
     project_service = providers.Factory(
-        ProjectService, mongo_repository=mongo_repository
+        ProjectService, analytics_repository=analytics_repository
     )
-    task_service = providers.Factory(TaskService, mongo_repository=mongo_repository)
-    user_service = providers.Factory(UserService, mongo_repository=mongo_repository)
+    task_service = providers.Factory(
+        TaskService, analytics_repository=analytics_repository
+    )
+    user_service = providers.Factory(
+        UserService, analytics_repository=analytics_repository
+    )
 
     consumer = providers.Factory(
         AIOKafkaConsumer,

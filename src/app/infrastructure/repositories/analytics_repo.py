@@ -3,10 +3,10 @@ from datetime import datetime, timedelta
 from app.config import TOPICS, TaskStatus
 from app.db_config import db
 from app.core.dto.task import TaskStatusStrDTO
-from app.core.interfaces.repositories.mongo_repo import MongoRepositoryInterface
+from app.core.interfaces.repositories.analytics_repo import AnalyticsRepositoryInterface
 
 
-class MongoRepository(MongoRepositoryInterface):
+class AnalyticsRepository(AnalyticsRepositoryInterface):
     async def filter(self, collection: TOPICS, **filters) -> list:
         collection = getattr(db, collection)
         results = await collection.find(filters).to_list(None)

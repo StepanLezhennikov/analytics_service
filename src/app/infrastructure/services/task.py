@@ -6,24 +6,24 @@ from dependency_injector.wiring import Provide
 from app.config import TOPICS, TaskStatus
 from app.core.dto.task import AvgTimeDTO, TaskStatusDTO
 from app.core.interfaces.services.task import TaskServiceInterface
-from app.core.interfaces.repositories.mongo_repo import MongoRepositoryInterface
+from app.core.interfaces.repositories.analytics_repo import AnalyticsRepositoryInterface
 
 
 class TaskService(TaskServiceInterface):
     def __init__(
         self,
-        mongo_repository: MongoRepositoryInterface = Depends(
-            Provide("mongo_repository")
+        analytics_repository: AnalyticsRepositoryInterface = Depends(
+            Provide("analytics_repository")
         ),
     ):
-        self._mongo_repository = mongo_repository
+        self._analytics_repository = analytics_repository
 
     async def get_tasks_statuses(self, project_id: int) -> List[TaskStatusDTO]:
-        updated_tasks = await self._mongo_repository.get_tasks_statuses(
+        updated_tasks = await self._analytics_repository.get_tasks_statuses(
             TOPICS.TASK_UPDATED.value, project_id=project_id
         )
         updated_tasks_ids = [task.task_id for task in updated_tasks]
-        tasks = await self._mongo_repository.get_tasks_statuses(
+        tasks = await self._analytics_repository.get_tasks_statuses(
             TOPICS.TASK_CREATED.value,
             project_id=project_id,
             exclude_task_ids=updated_tasks_ids,
@@ -46,7 +46,7 @@ class TaskService(TaskServiceInterface):
         return task_statuses
 
     async def get_avg_time_to_complete(self, project_id: int) -> AvgTimeDTO:
-        all_seconds = await self._mongo_repository.get_avg_time_to_complete(
+        all_seconds = await self._analytics_repository.get_avg_time_to_complete(
             TOPICS.TASK_UPDATED.value, project_id
         )
 
