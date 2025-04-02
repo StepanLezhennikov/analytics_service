@@ -18,6 +18,10 @@ dotenv = "^0.9.9"
 pydantic-settings = "^2.8.1"
 motor = "^3.7.0"
 dependency-injector = "^4.46.0"
+pytest = "^8.3.5"
+httpx = "^0.28.1"
+pytest-asyncio = "^0.25.3"
+pytest-cov = "^6.0.0"
 
 
 [build-system]
