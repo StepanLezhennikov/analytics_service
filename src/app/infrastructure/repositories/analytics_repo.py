@@ -4,10 +4,10 @@ from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 
 from app.config import TOPICS, Config, TaskStatus
 from app.core.dto.task import TaskStatusStrDTO
-from app.core.interfaces.repositories.mongo_repo import MongoRepositoryInterface
+from app.core.interfaces.repositories.analytics_repo import AnalyticsRepositoryInterface
 
 
-class MongoRepository(MongoRepositoryInterface):
+class MongoRepository(AnalyticsRepositoryInterface):
     def __init__(self, config: Config):
         self.config = config
         self.client: AsyncIOMotorClient = AsyncIOMotorClient(config.MONGO_URI)
