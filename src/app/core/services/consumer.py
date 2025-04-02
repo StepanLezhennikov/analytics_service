@@ -11,8 +11,6 @@ from app.core.interfaces.services.message_handler import MessageHandlerInterface
 
 logger = logging.getLogger("consumer")
 
-logger.setLevel(logging.INFO)
-
 
 class ConsumerService(ConsumerServiceInterface):
     def __init__(

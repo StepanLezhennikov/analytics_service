@@ -4,7 +4,7 @@ from app.config import TOPICS
 from app.core.dto.task import TaskStatusStrDTO
 
 
-class MongoRepositoryInterface(ABC):
+class AnalyticsRepositoryInterface(ABC):
     @abstractmethod
     async def filter(self, collection: TOPICS, **filters) -> list:
         pass
